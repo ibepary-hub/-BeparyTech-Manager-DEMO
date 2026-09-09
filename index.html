@@ -1,0 +1,759 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-src 'none'; child-src 'none'; manifest-src 'self'; font-src 'self'; script-src 'self' https://cdn.jsdelivr.net; script-src-attr 'none'; style-src 'self'; style-src-attr 'none'; img-src 'self' data: blob:; media-src 'self' blob:; worker-src 'self' blob:; connect-src 'self' https://kqdcbrpykaboabjglwxu.supabase.co wss://kqdcbrpykaboabjglwxu.supabase.co; upgrade-insecure-requests;">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="BeparyTech Manager">
+  <meta id="themeColorMeta" name="theme-color" content="#070707">
+  <title>BeparyTech Manager</title>
+  <link rel="manifest" href="manifest.json?v=96">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="favicon-64.png">
+  <link rel="stylesheet" href="style.css?v=96">
+
+
+
+</head>
+<body>
+  <div id="menuOverlay" class="menuOverlay" hidden></div>
+  <aside id="mainMenu" class="mainMenu" aria-hidden="true">
+    <div class="menuHead"><div class="menuBrand"><img src="icon-192.png" alt=""><div><strong>BeparyTech Manager</strong><span>Gestionale riparazioni & magazzino</span></div></div><button id="menuClose" class="menuClose animatedBtn" type="button">×</button></div>
+    <nav class="menuNav">
+      <button class="menuItem active" type="button" data-category="Dashboard"><span class="menuIcon">⌂</span><span><strong>Dashboard</strong><small>Riepilogo magazzino</small></span></button>
+      <div id="customMenuSections" class="customMenuSections"></div>
+
+      <div id="repairMenuGroup" class="menuGroup adminOnly" hidden>
+        <div class="menuGroupTitle">RIPARAZIONI</div>
+        <button id="quickRepairMenuItem" class="menuItem adminOnly" type="button" data-category="AccettazioneRapida"><span class="menuIcon">⚡</span><span><strong>Accettazione rapida</strong><small>Cliente, dispositivo e lavoro</small></span></button>
+        <button id="fullRepairMenuItem" class="menuItem adminOnly" type="button" data-category="AccettazioneCompleta"><span class="menuIcon">＋</span><span><strong>Accettazione completa</strong><small>Foto, firma, IMEI e preventivo</small></span></button>
+        <button id="repairsMenuItem" class="menuItem adminOnly" type="button" data-category="RiparazioniAdmin"><span class="menuIcon">🛠</span><span><strong>Riparazioni / Pratiche</strong><small>In lavorazione, pronti e storico</small></span></button>
+      </div>
+
+      <div class="menuGroup">
+        <div class="menuGroupTitle">MAGAZZINO</div>
+        <button class="menuItem" type="button" data-category="Cronologia"><span class="menuIcon">≋</span><span><strong>Cronologia magazzino</strong><small>Tutte le attività</small></span></button>
+        <button class="menuItem" type="button" data-category="Vendite"><span class="menuIcon">✓</span><span><strong>Uscite magazzino</strong><small>Scarichi, note e rientri</small></span></button>
+        <button id="bestekCatalogMenuItem" class="menuItem adminOnly" type="button" data-category="CatalogoBestek" hidden><span class="menuIcon">BK</span><span><strong>Catalogo Bestek</strong><small>Codici e accessori verificati</small></span></button>
+        <button id="catalogMenuItem" class="menuItem adminOnly" type="button" data-category="GestioneMagazzino" hidden><span class="menuIcon">＋</span><span><strong>Gestione magazzino</strong><small>Sezioni e prodotti</small></span></button>
+        <button id="zeroStockMenuItem" class="menuItem adminOnly" type="button" data-category="ScorteZero" hidden><span class="menuIcon">0</span><span><strong>Scorte a zero</strong><small>BackGlass e Housing separati</small></span></button>
+      </div>
+
+      <div id="salesMenuGroup" class="menuGroup adminOnly" hidden>
+        <div class="menuGroupTitle">VENDITE</div>
+        <button id="deviceSalesMenuItem" class="menuItem adminOnly" type="button" data-category="VenditeAdmin"><span class="menuIcon">€</span><span><strong>Vendita ricambi</strong><small>Prezzi, IVA e riferimenti acquisto</small></span></button>
+        <button id="invoicesMenuItem" class="menuItem adminOnly" type="button" data-category="Fatturazione"><span class="menuIcon">🧾</span><span><strong>Fatturazione</strong><small>Riparalo / MELA · XML Aruba</small></span></button>
+      </div>
+
+      <div id="adminMenuGroup" class="menuGroup adminOnly" hidden>
+        <div class="menuGroupTitle">AMMINISTRAZIONE</div>
+        <button id="hoursMenuItem" class="menuItem adminOnly" type="button" data-category="Orari"><span class="menuIcon">◷</span><span><strong>Orari</strong><small>Ore lavorate ed extra</small></span></button>
+        <button id="backupMenuItem" class="menuItem adminOnly" type="button" data-category="Backup"><span class="menuIcon">⇩</span><span><strong>Backup</strong><small>Esporta dati</small></span></button>
+        <button id="usersMenuItem" class="menuItem adminOnly" type="button" data-category="Utenti"><span class="menuIcon">♙</span><span><strong>Utenti</strong><small>Accessi e password</small></span></button>
+        <button id="securityAccessMenuItem" class="menuItem adminOnly" type="button" data-category="SicurezzaAccessi"><span class="menuIcon">◉</span><span><strong>Sicurezza accessi</strong><small>Login, dispositivi e provenienza</small></span></button>
+        <button id="settingsMenuItem" class="menuItem adminOnly" type="button" data-category="Impostazioni"><span class="menuIcon">⚙</span><span><strong>Impostazioni</strong><small>DYMO e preferenze gestionale</small></span></button>
+      </div>
+    </nav>
+    <div class="menuFooter"><span id="menuUserName">Utente</span><small id="menuUserRole">Standard</small></div>
+  </aside>
+  <div class="app">
+    <header>
+      <div class="brandHead">
+        <img src="icon-192.png" alt="BeparyTech" class="brandIcon">
+        <div>
+          <div class="eyebrow">BEPARYTECH MANAGER</div>
+          <h1>Gestionale riparazioni & magazzino</h1>
+        </div>
+      </div>
+      <div class="headerActions">
+        <button id="menuToggle" class="menuToggle animatedBtn" type="button" aria-label="Apri menu"><span class="menuGlyph">☰</span><span>Menu</span></button>
+        <button id="themeToggle" class="themeToggle animatedBtn" type="button" aria-label="Passa alla modalità giorno" title="Modalità giorno/notte">
+          <span class="themeSun" aria-hidden="true">☀︎</span><span class="themeTrack"><span class="themeKnob"></span></span><span class="themeMoon" aria-hidden="true">☾</span>
+          <span class="themeWord" aria-hidden="true">Tema</span>
+          <span id="themeIcon" class="srOnly" aria-hidden="true">☀︎</span><span id="themeLabel" class="srOnly">Giorno</span>
+        </button>
+        <span id="headerCloudPill" class="headerCloudPill" hidden>● Online</span>
+        <button id="headerLogoutBtn" class="headerLogoutBtn animatedBtn" type="button" hidden><span>⇥</span><strong>Esci</strong></button>
+      </div>
+    </header>
+
+    <section id="globalSearchBar" class="globalSearchBar" hidden>
+      <div class="globalSearchBox"><span>⌕</span><input id="globalSearch" type="search" placeholder="Cerca ovunque: prodotto, colore, codice, richiesta…"><button id="scanBarcodeBtn" class="miniBtn animatedBtn" type="button">Scansiona</button></div>
+      <div id="globalSearchResults" class="globalSearchResults" hidden></div>
+    </section>
+
+    <section class="stats">
+      <div class="card"><span>Pezzi totali</span><strong id="totalPieces">0</strong></div>
+      <div class="card"><span>Tipi disponibili</span><strong id="availableTypes">0</strong></div>
+      <div class="card warning"><span>Scorte basse</span><strong id="lowStock">0</strong></div>
+    </section>
+
+    <section class="categoryTabs categoryTabs3 categoryTabs4" aria-label="Categoria magazzino">
+      <button type="button" id="backglassTab" class="categoryTab active"><strong>BackGlass</strong><span>Vetro posteriore</span><b class="openHint">Apri ›</b></button>
+      <button type="button" id="housingTab" class="categoryTab"><strong>Housing</strong><span>Scocca completa</span><b class="openHint">Apri ›</b></button>
+      <button type="button" id="salesTab" class="categoryTab"><strong>Cronologia</strong><span>Tutte le operazioni</span><b class="openHint">Apri ›</b></button>
+      <button type="button" id="usersTab" class="categoryTab" hidden><strong>Utenti</strong><span>Gestione accessi</span><b class="openHint">Apri ›</b></button>
+    </section>
+
+    <section class="categoryTitle"><strong id="categoryName">BackGlass</strong><span id="categoryDescription">Vetro posteriore</span></section>
+
+    <section class="tools">
+      <input id="search" type="search" placeholder="Cerca iPhone o colore…">
+      <select id="filter">
+        <option value="all">Tutti</option>
+        <option value="available">Disponibili</option>
+        <option value="low">Scorta bassa</option>
+        <option value="empty">Esauriti</option>
+      </select>
+    </section>
+
+    <section id="authPanel" class="authPanel">
+      <div id="signedOut" class="repairLoginScene">
+        <section class="repairLoginBrand" aria-label="BeparyTech Manager">
+          <img src="beparytech-logo.png" alt="BeparyTech Manager" class="repairLoginLogo">
+          <div class="repairLoginEyebrow">RIPARAZIONI · VENDITA · ASSISTENZA · GESTIONE</div>
+          <h1>Riparazioni oggi.<br>Un domani <span>più connesso.</span></h1>
+          <p>Il gestionale pensato per chi lavora ogni giorno con smartphone, tablet, computer e console.</p>
+          <div class="repairLoginServices">
+            <span>⌁ <b>Smartphone</b></span><span>▣ <b>Tablet</b></span><span>▱ <b>Computer</b></span><span>◈ <b>Console</b></span><span>⚙ <b>Ricambi</b></span>
+          </div>
+          <div class="repairBenchVisual" aria-hidden="true">
+            <div class="repairGlow"></div>
+            <img src="iphone-15-pro-max.png" alt="" class="repairPhoneVisual">
+            <div class="tool toolA"></div><div class="tool toolB"></div><div class="tool toolC"></div>
+            <div class="repairMatLabel">BEPARY<span>TECH</span> · REPAIR LAB</div>
+          </div>
+        </section>
+
+        <section class="repairLoginCard">
+          <div class="repairCardLogo"><span class="repairPhoneMark">▱</span><strong>BEPARY<span>TECH</span></strong><small>MANAGER</small></div>
+          <div class="repairCardIntro"><strong>Bentornato</strong><span>Accedi alla tua officina digitale</span></div>
+          <label class="repairLoginField"><span class="fieldIcon">◯</span><input id="email" type="email" autocomplete="username" placeholder="Email"><span class="fieldEnd">⌨</span></label>
+          <label class="repairLoginField"><span class="fieldIcon">▣</span><input id="password" type="password" autocomplete="current-password" placeholder="Password"><span class="fieldEnd">●</span></label>
+          <div class="repairLoginMeta"><span>Accesso riservato</span><button id="forgotPasswordBtn" class="forgotPasswordBtn" type="button">Password dimenticata?</button></div>
+          <div class="authButtons repairAuthButtons"><button id="loginBtn" class="full">Accedi <span>→</span></button></div>
+          <div id="authMsg"></div>
+          <div class="repairSecurityStrip"><span>◈ Connessione protetta</span><span>☁ Dati sincronizzati</span><span>✓ Accessi registrati</span></div>
+          <div class="loginTrust"><span class="loginTrustMark">◆</span><div><strong>GESTIONALE PROPRIETARIO BEPARYTECH</strong><small>Accesso riservato · © 2026 BeparyTech · Tutti i diritti riservati</small></div></div>
+        </section>
+
+        <aside class="repairLoginAside">
+          <div class="repairAsideQuote">GOOD REPAIRS<br><strong>BETTER TOMORROW</strong></div>
+          <div class="repairFeature"><span>🛡</span><div><strong>Sicuro</strong><small>I tuoi dati sempre protetti</small></div></div>
+          <div class="repairFeature"><span>⚡</span><div><strong>Veloce</strong><small>Tutto a portata di mano</small></div></div>
+          <div class="repairFeature"><span>☁</span><div><strong>Sempre con te</strong><small>Da qualsiasi dispositivo</small></div></div>
+          <div class="repairFeature"><span>⚙</span><div><strong>Aggiornato</strong><small>In continua evoluzione</small></div></div>
+        </aside>
+      </div>
+      <div id="signedIn" hidden>
+        <div class="signedBrand"><img src="icon-192.png" alt=""><strong>BeparyTech Cloud</strong></div>
+        <div class="cloudLine"><span id="userEmail"></span><span id="cloudStatus">☁︎ Online</span></div>
+        <button id="logoutBtn" class="secondary full">Esci</button>
+      </div>
+    </section>
+    <section id="dashboardView" class="dashboardView dashboardV87" hidden>
+      <div class="dashTopbar">
+        <div class="dashSearchVisual"><span>⌕</span><strong>Cerca prodotti, IMEI, clienti, fatture…</strong></div>
+        <div class="dashUserMini"><span id="dashUserInitials">BT</span><div><strong id="dashUserName">BeparyTech</strong><small id="dashUserRole">Amministratore</small></div></div>
+      </div>
+
+      <div class="dashboardHero premiumDashboardHero v87Hero">
+        <div class="dashboardHeroCopy"><span class="usersKicker">BEPARYTECH MANAGER</span><h2>Benvenuto, <span id="dashboardGreetingName">Admin</span>!</h2><p>Tutto sotto controllo, sempre.</p></div>
+        <div class="heroQuote">“Piccole riparazioni, grandi connessioni.”<small>— BeparyTech</small></div>
+        <button id="refreshDashboardBtn" class="miniBtn animatedBtn" type="button">↻ Aggiorna</button>
+      </div>
+
+      <div class="dashboardMainGrid">
+        <div class="dashboardCenterCol">
+          <div id="adminStatsArea" class="adminStatsArea adminOnly" hidden>
+            <div id="dashboardCards" class="dashboardCards dashboardKpis"></div>
+            <div class="dashboardAnalyticsGrid">
+              <section class="dashAnalyticsCard salesTrendCard">
+                <div class="dashCardHead"><div><strong>Andamento attività</strong><small>Ultimi 6 mesi</small></div><span class="adminBadge">ADMIN</span></div>
+                <div id="dashboardMiniChart" class="dashboardMiniChart"></div>
+              </section>
+              <section class="dashAnalyticsCard categoryMixCard">
+                <div class="dashCardHead"><div><strong>Riepilogo magazzino</strong><small>BackGlass & Housing</small></div></div>
+                <div id="dashboardCategoryMix" class="dashboardCategoryMix"></div>
+              </section>
+            </div>
+          </div>
+
+          <div class="quickAccessGrid v87QuickAccess" aria-label="Accesso rapido">
+            <button type="button" data-quick-category="BackGlass"><b>▣</b><span><strong>BackGlass</strong><small>Vetri posteriori · NO LOGO</small></span><em>Apri →</em></button>
+            <button type="button" data-quick-category="Housing"><b>▢</b><span><strong>Housing</strong><small>Scocche complete · NO LOGO</small></span><em>Apri →</em></button>
+            <button type="button" data-quick-category="Vendite"><b>✓</b><span><strong>Vendite</strong><small>Scarichi e consegne</small></span><em>Apri →</em></button>
+            <button type="button" class="adminQuick" data-quick-category="RiparazioniAdmin"><b>⌁</b><span><strong>Riparazioni</strong><small>Clienti aziendali</small></span><em>Apri →</em></button>
+          </div>
+
+          <div id="adminOperationalPanels" class="dashboardColumns adminOnly" hidden>
+            <div class="dashboardPanel open"><button class="panelHead dashboardToggle" type="button" aria-expanded="true"><span><strong>Scorte in esaurimento</strong><small>Articoli da controllare</small></span><b class="panelChevron">⌄</b></button><div id="dashboardLowStock" class="dashboardPanelBody"></div></div>
+            <div class="dashboardPanel open"><button class="panelHead dashboardToggle" type="button" aria-expanded="true"><span><strong>Ultimi movimenti</strong><small>Attività più recenti</small></span><b class="panelChevron">⌄</b></button><div id="dashboardActivity" class="dashboardPanelBody"></div></div>
+          </div>
+
+          <div id="standardDashboardNotice" class="standardDashboardNotice" hidden>
+            <strong>Area operativa</strong><span>Usa i collegamenti rapidi per aprire magazzino, vendite e sezioni autorizzate.</span>
+          </div>
+        </div>
+
+        <aside class="dashboardActionRail">
+          <button class="railAction blue" type="button" data-rail-category="Vendite"><b>＋</b><span>Nuova vendita</span></button>
+          <button class="railAction green adminQuick" type="button" data-rail-category="RiparazioniAdmin" data-work-target="repairs"><b>＋</b><span>Nuova riparazione</span></button>
+          <button class="railAction purple adminQuick" type="button" data-rail-category="Fatturazione"><b>▤</b><span>Genera fattura</span></button>
+          <button class="railAction dark adminQuick" type="button" data-rail-category="Fatturazione"><b>⇧</b><span>Esporta per Aruba</span></button>
+          <div class="noLogoReminder"><strong>⚠ BackGlass & Housing</strong><span>Tutti gli articoli vengono gestiti con la dicitura <b>NO LOGO</b>, anche nelle fatture.</span></div>
+          <div class="railRecent"><div class="dashCardHead"><strong>Accessi rapidi</strong></div><button type="button" data-rail-category="Cronologia">Cronologia <span>→</span></button><button type="button" class="adminQuick" data-rail-category="ScorteZero">Scorte a zero <span>→</span></button><button type="button" class="adminQuick" data-rail-category="Orari">Ore lavorate <span>→</span></button></div>
+        </aside>
+      </div>
+    </section>
+    <main id="inventory"></main>
+    <section id="auditView" class="salesView" hidden><div class="salesHeader"><div><strong>Cronologia completa</strong><span>Movimenti, richieste e modifiche</span></div><button id="refreshAuditBtn" class="miniBtn animatedBtn" type="button">Aggiorna</button></div><div id="auditList"></div></section>
+
+    <section id="bestekCatalogView" class="catalogView bestekCatalogView" hidden>
+      <div class="adminHero bestekHero"><div><span class="usersKicker">CATALOGO BESTEK</span><h2>Codici, prezzi e accessori</h2><p>Catalogo privato sincronizzato con Supabase. Solo l’Admin può aggiungere, modificare prezzi o rimuovere prodotti.</p></div><span class="adminBadge">SOLO ADMIN</span></div>
+      <form id="bestekProductForm" class="bestekEditorCard" autocomplete="off">
+        <div class="bestekEditorHead"><div><strong id="bestekFormTitle">Aggiungi prodotto Bestek</strong><small>Il prezzo salvato rimane associato al codice BK finché l’Admin non lo modifica.</small></div><button id="bestekCancelEdit" class="miniBtn" type="button" hidden>Annulla modifica</button></div>
+        <div class="bestekEditorGrid">
+          <label><span>Codice BK *</span><input id="bestekCodeInput" type="text" maxlength="60" placeholder="es. BK76585" required></label>
+          <label><span>Nome prodotto *</span><input id="bestekNameInput" type="text" maxlength="180" placeholder="es. Adattatore USB-A → Type-C" required></label>
+          <label><span>Categoria *</span><input id="bestekCategoryInput" type="text" maxlength="80" placeholder="es. Adattatori" required></label>
+          <label><span>Prezzo vendita + IVA</span><div class="bestekPriceInput"><span>€</span><input id="bestekPriceInput" type="number" min="0" step="0.01" inputmode="decimal" placeholder="20,00"></div><small>Importo IVA esclusa. IVA 22% calcolata automaticamente.</small></label>
+        </div>
+        <div class="bestekEditorActions"><button id="bestekSaveBtn" class="primaryAction animatedBtn" type="submit">+ Aggiungi prodotto</button><div id="bestekFormMsg" class="createUserMsg" aria-live="polite"></div></div>
+      </form>
+      <div class="bestekToolbar"><input id="bestekSearch" type="search" placeholder="Cerca codice, prodotto o categoria…" autocomplete="off"><select id="bestekCategory"><option value="all">Tutte le categorie</option></select></div>
+      <div class="bestekSummary"><span>Prodotti trovati</span><strong id="bestekCount">0</strong></div>
+      <div id="bestekCatalogList" class="bestekCatalogList"></div>
+    </section>
+    <section id="zeroStockView" class="catalogView zeroStockView" hidden>
+      <div class="adminHero"><div><span class="usersKicker">SCORTE A ZERO</span><h2>Articoli esauriti</h2><p>BackGlass e Housing sono separati. Puoi controllare ed esportare solo gli articoli con quantità 0.</p></div><span class="adminBadge">ADMIN</span></div>
+      <div class="zeroStockSummary">
+        <div class="zeroStockStat"><span>BackGlass a 0</span><strong id="zeroBackglassCount">0</strong></div>
+        <div class="zeroStockStat"><span>Housing a 0</span><strong id="zeroHousingCount">0</strong></div>
+      </div>
+      <div class="zeroStockGrid">
+        <section class="zeroStockPanel"><div class="zeroStockHead"><div><strong>BackGlass</strong><small>Vetri posteriori con giacenza zero</small></div><button id="exportZeroBackglass" class="miniBtn animatedBtn" type="button">Esporta CSV</button></div><div id="zeroBackglassList" class="zeroStockList"></div></section>
+        <section class="zeroStockPanel"><div class="zeroStockHead"><div><strong>Housing</strong><small>Scocche complete con giacenza zero</small></div><button id="exportZeroHousing" class="miniBtn animatedBtn" type="button">Esporta CSV</button></div><div id="zeroHousingList" class="zeroStockList"></div></section>
+      </div>
+    </section>
+    <section id="backupView" class="catalogView" hidden><div class="adminHero"><div><span class="usersKicker">BACKUP</span><h2>Esporta i dati</h2><p>Scarica una copia del magazzino e della cronologia.</p></div><span class="adminBadge">ADMIN</span></div><div class="backupGrid"><button id="exportInventoryCsv" class="catalogCard backupAction" type="button"><strong>CSV Magazzino</strong><span>Prodotti, sezioni e quantità</span></button><button id="exportRequestsCsv" class="catalogCard backupAction" type="button"><strong>CSV Da ordinare</strong><span>Tutte le richieste</span></button><button id="exportFullBackup" class="catalogCard backupAction" type="button"><strong>Backup JSON completo</strong><span>Magazzino, richieste, vendite e cronologia</span></button></div></section>
+    <section id="salesView" class="salesView" hidden>
+      <div class="salesHeader"><div><strong>Vendute</strong><span>Vendite aperte, consegne, archivio, prezzi e riepilogo per modello</span></div><button id="refreshSalesBtn" class="miniBtn" type="button">Aggiorna</button></div>
+      <div class="salesSubTabs" role="tablist" aria-label="Vendite e archivio">
+        <button id="activeSalesTab" class="salesSubTab active" type="button">Vendute</button>
+        <button id="archiveSalesTab" class="salesSubTab" type="button">Archivio vendite</button>
+        <button id="soldSummaryTab" class="salesSubTab" type="button">Riepilogo venduto</button>
+      </div>
+      <div class="salesStoreHead"><strong>Dividi per negozio</strong><span>Scegli un negozio per vedere solo le sue vendite</span></div>
+      <div id="salesStoreTabs" class="salesStoreTabs" role="tablist" aria-label="Vendite per negozio"></div>
+      <div id="salesList"></div>
+    </section>
+
+
+    
+<section id="deviceSalesView" class="deviceSalesView" hidden>
+  <div class="adminWorkHero">
+    <div>
+      <span class="usersKicker">AREA PRIVATA ADMIN</span>
+      <h2 id="adminWorkHeroTitle">Area amministrativa</h2>
+      <p id="adminWorkHeroText">Gestisci vendite, accettazioni e fatturazione in aree separate.</p>
+    </div>
+    <span class="adminBadge">SOLO ADMIN</span>
+  </div>
+
+  <div class="adminWorkTabs" id="adminWorkTabs" role="tablist" aria-label="Vendite e riparazioni">
+    <button type="button" class="adminWorkTab" data-work-tab="sales" role="tab" aria-selected="false">
+      <span class="adminWorkIcon">📦</span>
+      <span class="adminWorkText"><strong>Vendite ricambi</strong><small>Ricambi e articoli elettronici</small></span>
+    </button>
+    <button type="button" class="adminWorkTab" data-work-tab="repairs" role="tab" aria-selected="false">
+      <span class="adminWorkIcon">🛠️</span>
+      <span class="adminWorkText"><strong>Accettazione & Riparazioni</strong><small>Pratiche, preventivi, garanzie e consegna</small></span>
+    </button>
+    <button type="button" class="adminWorkTab" data-work-tab="invoices" role="tab" aria-selected="false">
+      <span class="adminWorkIcon">🧾</span>
+      <span class="adminWorkText"><strong>Fatturazione</strong><small>Riparalo / MELA · Aruba XML</small></span>
+    </button>
+  </div>
+
+  <div id="adminSalesPanel" class="adminWorkPanel" data-work-panel="sales" hidden>
+    <div class="adminPanelHeader">
+      <div><strong>Vendite ricambi</strong><small>Registra una vendita e conserva il riferimento dell’acquisto.</small></div>
+    </div>
+
+    <form id="deviceSaleForm" class="deviceSaleCard adminUniformCard">
+      <div class="deviceSaleCardHead"><div><strong>Nuova vendita</strong><small>Prezzo inserito escluso IVA</small></div></div>
+      <div class="deviceSaleGrid">
+        <label><span>Data vendita *</span><input id="deviceSaleDate" type="date" required></label>
+        <label><span>Negozio *</span><select id="deviceSaleStore" required><option value="">Seleziona negozio…</option>
+<option>RPL Piacenza</option><option>RPL Manerbio</option>
+<option>MELA Piacenza</option><option>MELA Lime Store</option><option>MELA Repubblica</option><option>MELA Emilia Est</option>
+<option>DP Udine</option><option>DP Majano</option><option>DP Tolmezzo</option><option>DP Cividale</option><option>DP Codroipo</option><option>DP Colugna</option>
+<option>E-POL</option></select></label>
+        <label class="wide"><span>Ricambio / Articolo *</span><input id="deviceSaleName" type="text" maxlength="160" placeholder="Si compila dal link oppure scrivi manualmente" required></label>
+        <label><span>Prezzo escluso IVA *</span><div class="moneyInput"><span>€</span><input id="deviceSalePrice" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0,00" required></div></label>
+        <label><span>IVA %</span><input id="deviceSaleVatRate" type="number" min="0" max="100" step="0.01" value="22" inputmode="decimal"></label>
+        <label class="wide"><span>Link acquisto / riferimento</span><input id="deviceSalePurchaseUrl" type="url" maxlength="2000" placeholder="Incolla il link del prodotto"></label>
+        <label class="wide"><span>Fornitore riconosciuto</span><input id="deviceSaleSupplier" type="text" maxlength="160" placeholder="Si compila automaticamente dal link"></label>
+        <label class="wide"><span>Nota</span><textarea id="deviceSaleNote" maxlength="1000" rows="3" placeholder="Facoltativa"></textarea></label>
+      </div>
+      <div class="vatPreview">
+        <div><span>Imponibile</span><strong id="deviceSaleNet">€ 0,00</strong></div>
+        <div><span>IVA</span><strong id="deviceSaleVat">€ 0,00</strong></div>
+        <div class="total"><span>Totale IVA inclusa</span><strong id="deviceSaleGross">€ 0,00</strong></div>
+      </div>
+      <button class="primaryAction animatedBtn" type="submit">Salva vendita</button>
+      <div id="deviceSaleMsg" class="createUserMsg" aria-live="polite"></div>
+    </form>
+
+    <div class="deviceSaleCard deviceSaleHistoryCard adminUniformCard">
+      <div class="deviceSaleCardHead">
+        <div><strong>Vendite registrate</strong><small>Storico vendite ricambi</small></div>
+        <button id="refreshDeviceSalesBtn" class="miniBtn" type="button">Aggiorna</button>
+      </div>
+      <div id="deviceSalesSummary" class="deviceSalesSummary"></div>
+      <div id="deviceSalesList"><div class="emptyState">Caricamento…</div></div>
+    </div>
+  </div>
+
+  <div id="adminRepairsPanel" class="adminWorkPanel" data-work-panel="repairs" hidden>
+    <div class="adminPanelHeader">
+      <div><strong>Accettazione & Riparazioni</strong><small>Gestisci la pratica dal ritiro del dispositivo fino alla consegna e alla garanzia.</small></div>
+    </div>
+
+    <section class="quickIntakeCard deviceSaleCard adminUniformCard" id="quickIntakeCard">
+      <div class="deviceSaleCardHead"><div><strong>⚡ Accettazione rapida</strong><small>Quando hai poche informazioni: salva in pochi secondi e completa la pratica dopo.</small></div><span class="practicePill">SOLO ESSENZIALE</span></div>
+      <form id="quickRepairForm" class="quickRepairForm">
+        <div class="quickRepairGrid">
+          <label><span>Cliente *</span><select id="quickRepairClient" required><option value="">Seleziona cliente…</option><option value="VR Trasporti">VR Trasporti</option><option value="RIPARALO S.R.L.">RIPARALO S.R.L.</option><option value="E-POL">E-POL</option><option value="ALTRO">+ Altro cliente</option></select></label>
+          <label id="quickRepairCustomClientWrap" hidden><span>Nome cliente *</span><input id="quickRepairCustomClient" maxlength="160" placeholder="Scrivi il nome del cliente"></label>
+          <label><span>Dispositivo *</span><input id="quickRepairDevice" maxlength="160" placeholder="es. iPhone 14 Pro" required></label>
+          <label class="wide"><span>Lavoro da fare *</span><select id="quickRepairType" required><option value="">Seleziona lavoro…</option><option>Cambio display</option><option>Cambio batteria</option><option>Cambio connettore</option><option>Riparazione scheda madre</option><option>Diagnosi</option><option>Sostituzione fotocamera</option><option>Sostituzione altoparlante</option><option>Sostituzione microfono</option><option>Cambio vetro posteriore</option><option>Cambio housing / scocca</option><option>Recupero dati</option><option>Problema software</option><option value="ALTRO">+ Altro intervento</option></select></label>
+          <label id="quickRepairCustomTypeWrap" class="wide" hidden><span>Altro intervento *</span><input id="quickRepairCustomType" maxlength="240" placeholder="Scrivi il lavoro da fare"></label>
+          <label class="wide"><span>Nota veloce</span><input id="quickRepairNote" maxlength="500" placeholder="Facoltativa"></label>
+        </div>
+        <div class="quickRepairActions"><button class="primaryAction animatedBtn" type="submit">Salva accettazione rapida</button><button id="openFullRepairBtn" class="secondaryAction animatedBtn" type="button">Apri accettazione completa</button></div>
+        <div id="quickRepairMsg" class="createUserMsg" aria-live="polite"></div>
+      </form>
+    </section>
+
+    <div id="repairModeDivider" class="repairSectionDivider"><span>oppure</span></div>
+
+    <form id="adminRepairForm" class="deviceSaleCard adminUniformCard" hidden>
+      <div class="deviceSaleCardHead"><div><strong>📝 Accettazione completa</strong><small>Cliente, foto, firma, preventivo, lavorazione, consegna e garanzia</small></div><div class="practicePill" id="adminRepairPracticePreview">RIP-AUTO</div></div>
+      <div class="deviceSaleGrid">
+        <label><span>Data riparazione *</span><input id="adminRepairDate" type="date" required></label><label><span>Codice pratica</span><input id="adminRepairPracticeCode" maxlength="40" placeholder="Generato automaticamente"></label>
+        <label><span>Cliente *</span><select id="adminRepairClient" required><option value="">Seleziona cliente…</option><option value="RIPARALO S.R.L.">RIPARALO S.R.L.</option><option value="VR Trasporti">VR Trasporti</option><option value="ALTRO">Altro cliente</option></select></label>
+        <label><span>Sede / Negozio</span><select id="adminRepairStore"><option value="">Nessuna / sede cliente</option>
+<option>VR Trasporti</option><option>RPL Piacenza</option><option>RPL Manerbio</option>
+<option>MELA Piacenza</option><option>MELA Lime Store</option><option>MELA Repubblica</option><option>MELA Emilia Est</option>
+<option>DP Udine</option><option>DP Majano</option><option>DP Tolmezzo</option><option>DP Cividale</option><option>DP Codroipo</option><option>DP Colugna</option>
+<option>E-POL</option></select></label>
+        <label class="wide"><span>Cliente personalizzato</span><input id="adminRepairCustomClient" maxlength="160" placeholder="Usa solo se hai scelto Altro cliente" disabled></label><label><span>Telefono cliente</span><input id="adminRepairCustomerPhone" type="tel" maxlength="40" placeholder="es. +39 333 1234567"></label><label><span>Email cliente</span><input id="adminRepairCustomerEmail" type="email" maxlength="160" placeholder="Facoltativa"></label>
+        <label class="wide"><span>Dispositivo *</span><input id="adminRepairDevice" maxlength="160" placeholder="es. iPhone 15 Pro, S21 Ultra 5G..." required></label>
+        <label><span>Tipo di riparazione *</span><input id="adminRepairType" list="adminRepairTypeOptions" maxlength="240" placeholder="Seleziona o scrivi l’intervento" required><datalist id="adminRepairTypeOptions"><option value="Cambio display"><option value="Cambio batteria"><option value="Cambio connettore"><option value="Riparazione scheda madre"><option value="Altro"></datalist></label>
+        <label><span>IMEI / Seriale</span><input id="adminRepairImei" maxlength="120" placeholder="Facoltativo"></label><label class="wide"><span>Difetto dichiarato dal cliente *</span><textarea id="adminRepairReportedIssue" maxlength="1000" rows="2" placeholder="es. Non carica, display rotto, non si accende…" required></textarea></label><label class="wide"><span>Stato estetico all’accettazione</span><input id="adminRepairDeviceCondition" maxlength="500" placeholder="es. Vetro posteriore graffiato, cornice segnata…"></label><label class="wide"><span>Accessori consegnati</span><input id="adminRepairAccessories" maxlength="500" placeholder="es. Custodia, SIM, caricatore · oppure Nessuno"></label>
+        <div class="wide repairMediaBox"><div class="repairMediaHead"><strong>Foto all’accettazione</strong><small>Fino a 6 foto · JPG/PNG/WEBP · max 8 MB ciascuna</small></div><input id="adminRepairPhotos" type="file" accept="image/jpeg,image/png,image/webp" multiple><div id="adminRepairPhotoPreview" class="repairPhotoPreview"></div></div>
+        <div class="wide repairSignatureBox"><div class="repairMediaHead"><strong>Firma cliente</strong><small>Firma direttamente sullo schermo. Verrà allegata alla ricevuta della pratica.</small></div><canvas id="adminRepairSignatureCanvas" width="900" height="260" aria-label="Area firma cliente"></canvas><div class="signatureActions"><button id="clearAdminRepairSignature" class="miniBtn" type="button">Cancella firma</button><span id="adminRepairSignatureState">Nessuna firma</span></div><label class="signatureConsent"><input id="adminRepairSignatureConsent" type="checkbox"><span>Il cliente conferma presa in carico, stato estetico, accessori e condizioni indicate nella ricevuta.</span></label></div>
+        <label><span>Stato</span><select id="adminRepairStatus"><option>Da completare</option><option>Da diagnosticare</option><option>Da riparare</option><option>In lavorazione</option><option>Attesa ricambio</option><option>Attesa cliente</option><option selected>Riparato</option><option>Pronto</option><option>Consegnato</option></select></label><label><span>Preventivo</span><select id="adminRepairQuoteStatus"><option>Da diagnosticare</option><option>Preventivo da inviare</option><option>In attesa cliente</option><option>Accettato</option><option>Rifiutato</option></select></label><label><span>Importo preventivo</span><div class="moneyInput"><span>€</span><input id="adminRepairQuoteAmount" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0,00"></div></label><label><span>Garanzia intervento</span><select id="adminRepairWarrantyMonths"><option value="0">Nessuna</option><option value="3" selected>3 mesi</option><option value="6">6 mesi</option><option value="12">12 mesi</option><option value="24">24 mesi</option></select></label>
+        <label class="wide"><span>Riferimento e-Share</span><input id="adminRepairEShareRef" maxlength="120" placeholder="Facoltativo"></label>
+        <label><span>Costo ricambio (solo Admin)</span><div class="moneyInput"><span>€</span><input id="adminRepairPartCost" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0,00"></div></label>
+        <label><span>Prezzo escluso IVA *</span><div class="moneyInput"><span>€</span><input id="adminRepairPrice" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0,00" required></div></label>
+        <label><span>IVA %</span><input id="adminRepairVatRate" type="number" min="0" max="100" step="0.01" value="22" inputmode="decimal"></label>
+        <label><span>Fatturato</span><select id="adminRepairInvoiced"><option value="false" selected>No</option><option value="true">Sì</option></select></label><label class="wide"><span>Nota</span><textarea id="adminRepairNote" maxlength="1000" rows="3" placeholder="Dettagli intervento, ricambio usato, difetto riscontrato…"></textarea></label>
+      </div>
+      <div class="vatPreview">
+        <div><span>Imponibile</span><strong id="adminRepairNet">€ 0,00</strong></div>
+        <div><span>IVA</span><strong id="adminRepairVat">€ 0,00</strong></div>
+        <div class="total"><span>Totale IVA inclusa</span><strong id="adminRepairGross">€ 0,00</strong></div>
+      </div>
+      <div class="repairFormActions"><button id="adminRepairSubmitBtn" class="primaryAction animatedBtn" type="submit">Salva riparazione</button><button id="adminRepairCancelEdit" class="secondaryAction animatedBtn" type="button" hidden>Annulla modifica</button></div>
+      <div id="adminRepairMsg" class="createUserMsg" aria-live="polite"></div>
+    </form>
+
+    <div id="adminRepairsHistoryCard" class="deviceSaleCard deviceSaleHistoryCard adminUniformCard">
+      <div class="deviceSaleCardHead">
+        <div><strong>Riparazioni registrate</strong><small>Storico delle lavorazioni</small></div>
+        <div class="repairHistoryTools"><input id="adminRepairSearch" type="search" placeholder="Cerca pratica, cliente, IMEI…"><button id="refreshAdminRepairsBtn" class="miniBtn" type="button">Aggiorna</button></div>
+      </div>
+      <div id="adminRepairsSummary" class="deviceSalesSummary"></div>
+      <section class="repairPracticeBucket quickPracticeBucket">
+        <div class="repairBucketHead"><div><strong>⚡ Accettazioni rapide</strong><small>Pratiche salvate velocemente e ancora da completare</small></div><span id="adminQuickRepairsCount" class="practicePill">0</span></div>
+        <div id="adminQuickRepairsList"><div class="emptyState">Nessuna accettazione rapida da completare</div></div>
+      </section>
+      <section class="repairPracticeBucket fullPracticeBucket">
+        <div class="repairBucketHead"><div><strong>🔧 Riparazioni</strong><small>Pratiche complete, in lavorazione, pronte e consegnate</small></div><span id="adminFullRepairsCount" class="practicePill">0</span></div>
+        <div id="adminRepairsList"><div class="emptyState">Nessuna riparazione caricata</div></div>
+      </section>
+    </div>
+  </div>
+
+  <div id="adminInvoicesPanel" class="adminWorkPanel invoicePanel" data-work-panel="invoices" hidden>
+    <div class="adminPanelHeader">
+      <div><strong>Fatturazione clienti aziendali</strong><small>Riparalo / MELA e VR Trasporti · anteprima, CSV e XML Aruba.</small></div>
+    </div>
+
+    <div class="invoiceClientCard businessInvoiceClientCard">
+      <div><span class="invoiceEyebrow">CLIENTE DA FATTURARE</span><h3 id="invoiceClientTitle">RIPARALO S.R.L.</h3><p id="invoiceClientSubtitle">Via Antonio Emmanueli, 7 · 29121 Piacenza (PC) · IT</p></div>
+      <label class="invoiceClientSelect"><span>Cliente</span><select id="invoiceClientSelect"><option value="riparalo">RIPARALO S.R.L.</option><option value="vr">VR Trasporti</option></select></label>
+    </div>
+    <section id="vrInvoiceDataCard" class="deviceSaleCard adminUniformCard vrInvoiceDataCard" hidden>
+      <div class="deviceSaleCardHead"><div><strong>Dati fiscali VR Trasporti</strong><small>Inseriscili una volta: vengono salvati su questo dispositivo.</small></div></div>
+      <div class="deviceSaleGrid">
+        <label class="wide"><span>Ragione sociale *</span><input id="vrClientName" maxlength="120" value="VR Trasporti"></label>
+        <label><span>Partita IVA *</span><input id="vrClientVat" maxlength="13" placeholder="IT01234567890"></label>
+        <label><span>Codice fiscale</span><input id="vrClientTaxCode" maxlength="16"></label>
+        <label><span>Codice destinatario *</span><input id="vrClientRecipient" maxlength="7" placeholder="XXXXXXX"></label>
+        <label class="wide"><span>Indirizzo *</span><input id="vrClientAddress" maxlength="120"></label>
+        <label><span>CAP *</span><input id="vrClientZip" maxlength="5"></label>
+        <label><span>Comune *</span><input id="vrClientCity" maxlength="80"></label>
+        <label><span>Provincia *</span><input id="vrClientProvince" maxlength="2" placeholder="PC"></label>
+      </div>
+      <button id="saveVrClientBtn" class="secondaryAction animatedBtn" type="button">Salva dati VR Trasporti</button>
+      <div id="vrClientMsg" class="createUserMsg" aria-live="polite"></div>
+    </section>
+
+    <div class="invoiceGrid">
+      <section class="deviceSaleCard adminUniformCard">
+        <div class="deviceSaleCardHead"><div><strong>1. Periodo e documento</strong><small>Scegli cosa includere nella fattura.</small></div></div>
+        <div class="deviceSaleGrid">
+          <label><span>Dal *</span><input id="invoiceFrom" type="date" required></label>
+          <label><span>Al *</span><input id="invoiceTo" type="date" required></label>
+          <label><span>Data fattura *</span><input id="invoiceDate" type="date" required></label>
+          <label><span>Numero fattura *</span><input id="invoiceNumber" type="text" maxlength="30" placeholder="es. 24/2026" required></label>
+        </div>
+        <div class="invoiceChecks">
+          <label><input id="invoiceIncludeStock" type="checkbox" checked><span>Vendite magazzino a RPL / MELA</span></label>
+          <label><input id="invoiceIncludeParts" type="checkbox" checked><span>Vendite ricambi admin</span></label>
+          <label><input id="invoiceIncludeRepairs" type="checkbox" checked><span>Riparazioni dispositivi non ancora fatturate</span></label>
+          <label><input id="invoiceIncludeHours" type="checkbox" checked><span>Servizio di assistenza · ore Riparalo + extra Riparalo</span></label>
+        </div>
+        <div class="invoiceServiceBox">
+          <div><strong>Servizio di assistenza tecnica</strong><small>Importa automaticamente le ore normali e le ore extra indicate come Riparalo.</small></div>
+          <label><span>Tariffa oraria € + IVA</span><input id="invoiceHourlyRate" type="number" min="0" step="0.01" value="20.00"></label>
+          <label class="invoiceMergeHours"><input id="invoiceMergeHours" type="checkbox" checked><span>Raggruppa ore normali + extra in una sola riga fattura</span></label>
+          <div id="invoiceHoursInfo" class="invoiceHoursInfo">Le ore verranno lette dalla sezione Orari in base al periodo selezionato.</div>
+        </div>
+        <button id="invoiceRefreshBtn" class="primaryAction animatedBtn" type="button">Aggiorna anteprima</button>
+        <div id="invoiceLoadMsg" class="createUserMsg" aria-live="polite"></div>
+      </section>
+
+      <section class="deviceSaleCard adminUniformCard">
+        <div class="deviceSaleCardHead"><div><strong>2. Dati emittente</strong><small>Li inserisci una volta: vengono salvati solo su questo dispositivo.</small></div></div>
+        <div class="deviceSaleGrid">
+          <label class="wide"><span>Ragione sociale / Nome *</span><input id="issuerName" maxlength="120" placeholder="La tua ditta / ragione sociale"></label>
+          <label><span>Partita IVA *</span><input id="issuerVat" maxlength="13" placeholder="IT01234567890"></label>
+          <label><span>Codice fiscale</span><input id="issuerTaxCode" maxlength="16"></label>
+          <label class="wide"><span>Indirizzo *</span><input id="issuerAddress" maxlength="120"></label>
+          <label><span>CAP *</span><input id="issuerZip" maxlength="5"></label>
+          <label><span>Comune *</span><input id="issuerCity" maxlength="80"></label>
+          <label><span>Provincia *</span><input id="issuerProvince" maxlength="2" placeholder="PC"></label>
+          <label><span>Regime fiscale *</span><select id="issuerRegime"><option value="RF01">RF01 · Ordinario</option><option value="RF19">RF19 · Forfettario</option><option value="RF18">RF18 · Altro</option></select></label>
+        </div>
+        <button id="saveIssuerBtn" class="secondaryAction animatedBtn" type="button">Salva dati emittente</button>
+        <div id="issuerMsg" class="createUserMsg" aria-live="polite"></div>
+      </section>
+    </div>
+
+    <section class="deviceSaleCard adminUniformCard invoicePreviewCard">
+      <div class="deviceSaleCardHead"><div><strong>3. Anteprima fattura</strong><small id="invoicePreviewSubtitle">RPL e tutti i punti MELA vengono fatturati a Riparalo S.r.l.</small></div></div>
+      <div id="invoiceSummary" class="deviceSalesSummary"><div><span>Righe</span><strong>0</strong></div><div><span>Imponibile</span><strong>€ 0,00</strong></div><div><span>IVA</span><strong>€ 0,00</strong></div><div><span>Totale</span><strong>€ 0,00</strong></div></div>
+      <div id="invoiceLines" class="invoiceLines"><div class="emptyState">Scegli il periodo e premi “Aggiorna anteprima”.</div></div>
+      <div class="invoiceActions">
+        <button id="invoiceCsvBtn" class="secondaryAction animatedBtn" type="button" disabled>Esporta CSV riepilogo</button>
+        <button id="invoiceXmlBtn" class="primaryAction animatedBtn" type="button" disabled>Genera XML per Aruba</button>
+        <button id="invoiceMarkPaidBtn" class="secondaryAction animatedBtn" type="button" disabled>Segna riparazioni come fatturate</button>
+      </div>
+      <p class="invoiceHint">Il file XML viene generato nel browser e non contiene password Aruba. Prima dell’invio controlla sempre numero, data, imponibile e IVA nell’anteprima di Aruba.</p>
+    </section>
+  </div>
+</section>
+
+
+
+<section id="settingsView" class="catalogView settingsView" hidden>
+  <div class="adminHero"><div><span class="usersKicker">IMPOSTAZIONI</span><h2>Stampa ed etichette</h2><p>Configura una volta la DYMO. Le preferenze restano memorizzate su questo dispositivo.</p></div><span class="adminBadge">ADMIN</span></div>
+  <section class="deviceSaleCard adminUniformCard repairLabelSettings">
+      <div class="deviceSaleCardHead"><div><strong>🏷 Etichette DYMO</strong><small>Scegli una volta il formato. Verrà ricordato su questo dispositivo.</small></div><span id="dymoRepairSizeBadge" class="practicePill">32 × 57 mm</span></div>
+      <div class="labelConfigGrid">
+        <label><span>Formato etichetta</span><select id="repairLabelPreset">
+          <option value="32x57" selected>32 × 57 mm · Durable / piccola</option>
+          <option value="25x54">25 × 54 mm</option>
+          <option value="36x89">36 × 89 mm</option>
+          <option value="19x51">19 × 51 mm · stretta</option>
+          <option value="54x101">54 × 101 mm · grande</option>
+          <option value="57x32">57 × 32 mm · orizzontale</option>
+          <option value="custom">Personalizzata</option>
+        </select></label>
+        <label><span>Larghezza mm</span><input id="repairLabelWidth" type="number" min="10" max="120" step="1" value="32"></label>
+        <label><span>Altezza mm</span><input id="repairLabelHeight" type="number" min="10" max="200" step="1" value="57"></label>
+        <label class="labelQrToggle"><span>Contenuto</span><label class="inlineCheck"><input id="repairLabelIncludeQr" type="checkbox" checked> QR pratica</label></label>
+      </div>
+      <div class="labelConfigHint">La stampa usa le dimensioni reali in millimetri. Nella finestra di stampa seleziona scala 100% / dimensioni effettive e nessun margine.</div>
+  </section>
+
+
+  <div class="settingsInfoCard"><strong>Come funziona</strong><span>Nelle pratiche usa “Stampa DYMO”. Il gestionale applicherà automaticamente il formato scelto qui e, se attivo, inserirà anche il QR della pratica.</span></div>
+</section>
+
+<section id="securityAccessView" class="catalogView securityAccessView" hidden>
+  <div class="adminHero"><div><span class="usersKicker">SICUREZZA</span><h2>Accessi al gestionale</h2><p>Controlla chi ha effettuato l’accesso, quando, da quale dispositivo e da quale zona approssimativa.</p></div><span class="adminBadge">ADMIN</span></div>
+  <section class="deviceSaleCard adminUniformCard accessSecurityCard">
+    <div class="deviceSaleCardHead"><div><strong>◉ Cronologia login</strong><small>IP e posizione sono rilevati lato server. La posizione è indicativa e può variare con VPN o rete mobile.</small></div><button id="refreshLoginEventsBtn" class="miniBtn" type="button">Aggiorna</button></div>
+    <div id="loginAlertStatus" class="loginAlertStatus"><strong>Registro accessi attivo</strong><span>Ogni accesso riuscito viene registrato automaticamente e può essere consultato solo dagli amministratori.</span></div>
+    <div id="loginEventsSummary" class="deviceSalesSummary"></div>
+    <div id="loginEventsList"><div class="emptyState">Caricamento accessi…</div></div>
+  </section>
+  <div class="settingsInfoCard"><strong>Privacy</strong><span>La posizione deriva dall’indirizzo IP e non usa il GPS. Gli utenti del gestionale devono essere informati che gli accessi vengono registrati per finalità di sicurezza.</span></div>
+</section>
+
+<section id="hoursView" class="hoursView" hidden>
+      <div class="hoursHero"><div><span class="usersKicker">AREA PRIVATA ADMIN</span><h2>I miei orari</h2><p>Registra ore lavorate, note e attività extra. Questa sezione è visibile solo a te.</p></div><span class="adminBadge">SOLO ADMIN</span></div>
+      <div class="hoursToolbar"><label><span>Mese</span><input id="hoursMonth" type="month"></label><button id="hoursTodayBtn" class="miniBtn animatedBtn" type="button">Oggi</button><button id="hoursRefreshBtn" class="miniBtn animatedBtn" type="button">Aggiorna</button></div>
+      <div class="hoursMonthsPanel"><div class="hoursMonthsTitle"><strong>Mesi</strong><small>Scegli un mese</small></div><div id="hoursMonthColumns" class="hoursMonthColumns" aria-label="Mesi dell'anno"></div></div>
+      <div class="hoursSummary"><div><span>Ore normali</span><strong id="hoursNormalTotal">0h 00m</strong></div><div><span>Ore extra</span><strong id="hoursExtraTotal">0h 00m</strong></div><div><span>Totale mese</span><strong id="hoursGrandTotal">0h 00m</strong></div><div><span>Extra €</span><strong id="hoursExtraAmount">€ 0,00</strong></div></div>
+      <div class="hoursGrid">
+        <form id="hoursForm" class="hoursCard collapsibleHourCard"><button class="catalogCardTitle hourCardToggle" type="button" aria-expanded="false"><span class="catalogIcon">◷</span><div><strong>Orario giornaliero</strong><small>Mattina e pomeriggio</small></div><b>⌄</b></button><div class="hourCardBody" hidden>
+          <label><span>Data *</span><input id="workDate" type="date" required></label>
+          <div class="hoursTwoCols"><label><span>Entrata mattina</span><input id="morningIn" type="time"></label><label><span>Uscita mattina</span><input id="morningOut" type="time"></label></div>
+          <div class="hoursTwoCols"><label><span>Entrata pomeriggio</span><input id="afternoonIn" type="time"></label><label><span>Uscita pomeriggio</span><input id="afternoonOut" type="time"></label></div>
+          <label><span>Azienda / attività</span><input id="workCompany" type="text" maxlength="80" placeholder="es. e-Pol, Riparalo…"></label><label><span>Nota</span><textarea id="workNote" maxlength="400" rows="3" placeholder="Facoltativa"></textarea></label>
+          <button class="primaryAction animatedBtn bigSaveAction" type="submit">Salva orario</button><div id="hoursMsg" class="createUserMsg"></div></div>
+        </form>
+        <form id="extraForm" class="hoursCard collapsibleHourCard"><button class="catalogCardTitle hourCardToggle" type="button" aria-expanded="false"><span class="catalogIcon">＋</span><div><strong>Aggiungi extra</strong><small>Puoi inserire più extra nello stesso giorno</small></div><b>⌄</b></button><div class="hourCardBody" hidden>
+          <label><span>Data *</span><input id="extraDate" type="date" required></label><label><span>Descrizione *</span><input id="extraDescription" type="text" maxlength="160" placeholder="es. Riparazione extra" required></label>
+          <div class="hoursTwoCols"><label><span>Ore</span><input id="extraHours" type="number" min="0" max="24" value="0"></label><label><span>Minuti</span><input id="extraMinutes" type="number" min="0" max="59" value="0"></label></div>
+          <div class="hoursTwoCols"><label><span>Importo €</span><input id="extraAmount" type="number" min="0" step="0.01" value="0"></label><label><span>Azienda / cliente</span><input id="extraCompany" type="text" maxlength="80"></label></div>
+          <label><span>Nota</span><textarea id="extraNote" maxlength="400" rows="3" placeholder="Facoltativa"></textarea></label><button class="primaryAction animatedBtn bigSaveAction" type="submit">Aggiungi extra</button><div id="extraMsg" class="createUserMsg"></div></div>
+        </form>
+      </div>
+      <div class="hoursCard hoursListCard"><div class="catalogListHead"><div><strong>Riepilogo del mese</strong><small>e-Pol, Riparalo e note separati</small></div></div><div id="hoursList"><div class="emptyState">Caricamento…</div></div></div>
+    </section>
+    <section id="usersView" class="usersView" hidden>
+      <div class="usersPanel">
+        <div class="usersHeader">
+          <div><span class="usersKicker">AMMINISTRAZIONE</span><h2>Gestione utenti</h2><p>Crea gli account che possono accedere al gestionale BeparyTech.</p></div>
+          <button id="refreshUsersBtn" class="miniBtn" type="button">Aggiorna</button>
+        </div>
+        <form id="createUserForm" class="createUserForm">
+          <label><span>Username *</span><input id="newUsername" type="text" autocomplete="off" maxlength="40" placeholder="es. laboratorio1" required></label>
+          <label><span>Email *</span><input id="newUserEmail" type="email" autocomplete="off" placeholder="utente@email.it" required></label>
+          <label><span>Password login *</span><input id="newUserPassword" type="password" autocomplete="new-password" minlength="12" maxlength="128" placeholder="Minimo 12 caratteri · A-z · 0-9 · simbolo" required></label>
+          <label><span>Password operatore *</span><input id="newOperatorPassword" type="password" autocomplete="new-password" minlength="12" maxlength="128" placeholder="Minimo 12 caratteri · A-z · 0-9 · simbolo" required></label>
+          <label><span>Ruolo</span><select id="newUserRole"><option value="standard">Standard</option><option value="admin">Admin</option></select></label>
+          <button id="createUserBtn" class="primaryAction createUserBtn" type="submit">Crea utente</button>
+          <div id="createUserMsg" class="createUserMsg" aria-live="polite"></div>
+        </form>
+      </div>
+      <div class="usersPanel">
+        <div class="usersHeader"><div><span class="usersKicker">SICUREZZA LOGIN</span><h2>Cambia password</h2><p>Puoi cambiare la tua password oppure quella di un utente del gestionale.</p></div></div>
+        <form id="adminLoginPasswordForm" class="createUserForm passwordAdminForm">
+          <label><span>Utente *</span><select id="adminLoginPasswordUser" required><option value="">Seleziona utente…</option></select></label>
+          <label><span>Nuova password *</span><input id="adminLoginPasswordValue" type="password" autocomplete="new-password" minlength="12" maxlength="128" placeholder="Minimo 12 caratteri · A-z · 0-9 · simbolo" required></label>
+          <label><span>Ripeti password *</span><input id="adminLoginPasswordValue2" type="password" autocomplete="new-password" minlength="12" maxlength="128" placeholder="Ripeti la password" required></label>
+          <button id="adminLoginPasswordSave" class="primaryAction createUserBtn" type="submit">Aggiorna password</button>
+          <div id="adminLoginPasswordMsg" class="createUserMsg" aria-live="polite"></div>
+        </form>
+      </div>
+      <div class="usersPanel usersListPanel">
+        <div class="usersListTitle"><strong>Utenti</strong><span id="usersCount">0</span></div>
+        <div id="usersList"><div class="emptyState">Caricamento utenti…</div></div>
+      </div>
+    </section>
+
+    <section id="catalogView" class="catalogView" hidden>
+      <div class="adminHero"><div><span class="usersKicker">AMMINISTRAZIONE MAGAZZINO</span><h2>Sezioni e prodotti</h2><p>Crea nuove sezioni del gestionale e inserisci prodotti con una giacenza iniziale.</p></div><span class="adminBadge">ADMIN</span></div>
+      <div class="catalogGrid">
+        <form id="createSectionForm" class="catalogCard">
+          <div class="catalogCardTitle"><span class="catalogIcon">＋</span><div><strong>Nuova sezione</strong><small>Comparirà nel menu di tutti</small></div></div>
+          <label><span>Nome sezione *</span><input id="sectionName" type="text" maxlength="60" placeholder="es. Batterie" required></label>
+          <label><span>Descrizione</span><input id="sectionDescription" type="text" maxlength="120" placeholder="es. Batterie ricambio"></label>
+          <button class="primaryAction animatedBtn" type="submit">Crea sezione</button>
+          <div id="sectionFormMsg" class="createUserMsg"></div>
+        </form>
+        <form id="createProductForm" class="catalogCard">
+          <div class="catalogCardTitle"><span class="catalogIcon">▦</span><div><strong>Aggiungi prodotto</strong><small>Inserisci subito la giacenza</small></div></div>
+          <label><span>Sezione *</span><select id="productSection" required><option value="">Seleziona sezione…</option></select></label>
+          <label><span>Nome prodotto *</span><input id="productName" type="text" maxlength="100" placeholder="es. Batteria iPhone 15" required></label>
+          <label><span>Variante / colore</span><input id="productVariant" type="text" maxlength="80" placeholder="Facoltativo"></label>
+          <div class="catalogTwoCols"><label><span>Codice / SKU</span><input id="productSku" type="text" maxlength="80" placeholder="Facoltativo"></label><label><span>Barcode / QR</span><input id="productBarcode" type="text" maxlength="120" placeholder="Facoltativo"></label></div>
+          <div class="catalogTwoCols"><label><span>Giacenza iniziale *</span><input id="productQuantity" type="number" min="0" value="0" required></label><label><span>Scorta bassa</span><input id="productLowStock" type="number" min="0" value="2"></label></div>
+          <button class="primaryAction animatedBtn" type="submit">Aggiungi prodotto</button>
+          <div id="productFormMsg" class="createUserMsg"></div>
+        </form>
+      </div>
+      <div class="catalogCard catalogListCard"><div class="catalogListHead"><div><strong>Sezioni create</strong><small>Prodotti disponibili nel menu</small></div><button id="refreshCatalogBtn" class="miniBtn animatedBtn" type="button">Aggiorna</button></div><div id="catalogAdminList"></div></div>
+      <div class="catalogCard storeManagerCard adminOnlyBlock">
+        <div class="catalogListHead"><div><strong>Gestione negozi</strong><small>Solo Admin · aggiungi, modifica o disattiva negozi</small></div><span class="adminBadge">ADMIN</span></div>
+        <form id="storeAdminForm" class="storeAdminForm">
+          <input id="storeAdminName" maxlength="80" placeholder="Nome negozio" required>
+          <label class="storePrivateToggle"><input id="storeAdminPrivate" type="checkbox"><span>Solo Admin</span></label>
+          <button class="primaryAction" type="submit">+ Aggiungi negozio</button>
+        </form>
+        <div id="storeAdminMsg" class="createUserMsg"></div>
+        <div id="storeAdminList" class="storeAdminList"></div>
+      </div>
+    </section>
+  </div>
+
+  <div id="saleModal" class="saleModal" hidden>
+    <div class="saleDialog" role="dialog" aria-modal="true" aria-labelledby="saleTitle">
+      <div class="saleDialogHead"><div><span class="saleKicker">SCARICO MAGAZZINO</span><h2 id="saleTitle">Scarica 1 dalla giacenza</h2></div><button id="cancelSaleX" class="closeBtn" type="button" aria-label="Chiudi">×</button></div>
+      <div id="saleItemLabel" class="saleItemLabel"></div>
+      <div class="operatorGrid operatorCodeOnly">
+        <label><span class="fieldLabel">Codice operatore *</span><input id="saleOperatorPassword" class="modalInput" type="password" inputmode="numeric" maxlength="12" autocomplete="off" placeholder="Inserisci il codice operatore"></label>
+        <div class="operatorResolved"><span>Nome operatore</span><strong id="saleOperatorResolvedName">Automatico dal codice</strong></div>
+        <select id="saleOperatorName" hidden><option value=""></option></select>
+      </div>
+      <label class="fieldLabel" for="saleCustomerSelect">Negozio *</label>
+      <select id="saleCustomerSelect" class="modalSelect customerSelect">
+        <option value="">Seleziona un negozio…</option>
+      </select>
+      <label class="fieldLabel" for="saleEShareRef">Riferimento e-Share <span class="optionalText">(facoltativo)</span></label>
+      <input id="saleEShareRef" class="modalInput" type="text" maxlength="120" autocomplete="off" placeholder="es. 8107">
+      <label class="fieldLabel" for="saleNote">Nota <span class="optionalText">(facoltativa)</span></label>
+      <textarea id="saleNote" class="reasonInput" rows="3" placeholder="Scrivi una nota sull'operazione…"></textarea>
+      <div id="saleError" class="saleError"></div>
+      <div class="saleActions"><button id="cancelSaleBtn" class="secondaryAction" type="button">Annulla</button><button id="confirmSaleBtn" class="primaryAction" type="button" disabled>Conferma −1</button></div>
+    </div>
+  </div>
+
+
+  <div id="editStoreModal" class="saleModal" hidden>
+    <div class="saleDialog" role="dialog" aria-modal="true" aria-labelledby="editStoreTitle">
+      <div class="saleDialogHead"><div><span class="saleKicker">MODIFICA VENDITA</span><h2 id="editStoreTitle">Cambia negozio</h2></div><button id="editStoreX" class="closeBtn" type="button" aria-label="Chiudi">×</button></div>
+      <div id="editStoreItem" class="saleItemLabel"></div>
+      <label class="fieldLabel" for="editStoreSelect">Negozio</label>
+      <select id="editStoreSelect" class="modalSelect">
+        <option value="">Seleziona negozio…</option>
+      </select>
+      <div id="editStoreError" class="saleError"></div>
+      <div class="saleActions"><button id="editStoreCancel" class="secondaryAction" type="button">Annulla</button><button id="editStoreSave" class="primaryAction" type="button">Salva</button></div>
+    </div>
+  </div>
+
+  <div id="deleteSaleModal" class="saleModal" hidden>
+    <div class="saleDialog" role="dialog" aria-modal="true" aria-labelledby="deleteSaleTitle">
+      <div class="saleDialogHead"><div><span class="saleKicker dangerKicker">ARCHIVIA VENDITA</span><h2 id="deleteSaleTitle">Perché stai eliminando questa riga?</h2></div><button id="deleteSaleX" class="closeBtn" type="button" aria-label="Chiudi">×</button></div>
+      <div id="deleteSaleItem" class="saleItemLabel"></div>
+      <label class="fieldLabel" for="deleteReason">Motivo eliminazione</label>
+      <textarea id="deleteReason" class="reasonInput" rows="4" placeholder="Scrivi il motivo…"></textarea>
+      <div class="archiveNote">La riga non verrà persa: sarà spostata nella sezione Archivio con data e ora dell’eliminazione.</div>
+      <label class="restoreStockOption"><input id="restoreToStock" type="checkbox"><span><strong>Rimetti il pezzo in magazzino</strong><small>Se attivi questa opzione, la quantità del BackGlass/Housing verrà aumentata automaticamente di 1.</small></span></label>
+      <div id="deleteSaleError" class="saleError"></div>
+      <div class="saleActions"><button id="deleteSaleCancel" class="secondaryAction" type="button">Annulla</button><button id="deleteSaleConfirm" class="dangerAction" type="button" disabled>Archivia riga</button></div>
+    </div>
+  </div>
+
+  <div id="restoreSaleModal" class="saleModal" hidden>
+    <div class="saleDialog" role="dialog" aria-modal="true" aria-labelledby="restoreSaleTitle">
+      <div class="saleDialogHead"><div><span class="saleKicker restoreKicker">RIMETTI IN MAGAZZINO</span><h2 id="restoreSaleTitle">Conferma il rientro</h2></div><button id="restoreSaleX" class="closeBtn" type="button" aria-label="Chiudi">×</button></div>
+      <div id="restoreSaleItem" class="saleItemLabel"></div>
+      <label class="fieldLabel" for="restoreReasonStandard">Motivazione *</label>
+      <textarea id="restoreReasonStandard" class="reasonInput" rows="4" placeholder="Perché il pezzo viene rimesso in magazzino?"></textarea>
+      <label class="fieldLabel" for="restoreOperatorPassword">Password operatore *</label>
+      <input id="restoreOperatorPassword" class="modalInput" type="password" autocomplete="off" placeholder="Password operatore">
+      <div id="restoreSaleError" class="saleError"></div>
+      <div class="saleActions"><button id="restoreSaleCancel" class="secondaryAction" type="button">Annulla</button><button id="restoreSaleConfirm" class="primaryAction" type="button" disabled>Rimetti +1</button></div>
+    </div>
+  </div>
+
+
+  <div id="saleNoteModal" class="saleModal" hidden>
+    <div class="saleDialog noteDialog" role="dialog" aria-modal="true" aria-labelledby="saleNoteEditTitle">
+      <div class="saleDialogHead"><div><span class="saleKicker">NOTA VENDITA</span><h2 id="saleNoteEditTitle">Modifica nota</h2></div><button id="saleNoteEditX" class="closeBtn" type="button" aria-label="Chiudi">×</button></div>
+      <div id="saleNoteEditItem" class="saleItemLabel"></div>
+      <label class="fieldLabel" for="saleNoteEditText">Nota</label>
+      <textarea id="saleNoteEditText" class="reasonInput" maxlength="1000" rows="5" placeholder="Scrivi la nota…"></textarea>
+      <div class="noteTools"><button id="saleNotePrint" class="secondaryAction" type="button">Stampa DYMO</button><button id="saleNoteExport" class="secondaryAction" type="button">Esporta nota</button></div>
+      <div class="noteHistoryHead"><strong>Storico modifiche</strong><small>Le versioni precedenti non vengono cancellate</small></div>
+      <div id="saleNoteHistory" class="noteHistory"><div class="emptyState">Caricamento…</div></div>
+      <div id="saleNoteEditError" class="saleError"></div>
+      <div class="saleActions"><button id="saleNoteEditCancel" class="secondaryAction" type="button">Chiudi</button><button id="saleNoteEditSave" class="primaryAction" type="button">Salva modifica</button></div>
+    </div>
+  </div>
+  <div id="dymoPrintLabel" class="dymoPrintLabel" aria-hidden="true"><strong id="dymoPrintTitle"></strong><span id="dymoPrintMeta"></span><p id="dymoPrintNote"></p></div>
+  <div id="repairDymoPrintLabel" class="repairDymoPrintLabel" aria-hidden="true"><div id="repairDymoQr" class="repairDymoQr"></div><strong id="repairDymoCode"></strong><span id="repairDymoClient"></span><b id="repairDymoDevice"></b><p id="repairDymoWork"></p></div>
+
+  <div id="operatorPasswordModal" class="saleModal" hidden>
+    <div class="saleDialog compactDialog" role="dialog" aria-modal="true" aria-labelledby="operatorPasswordTitle">
+      <div class="saleDialogHead"><div><span class="saleKicker">SICUREZZA OPERATORE</span><h2 id="operatorPasswordTitle">Imposta password operatore</h2></div><button id="operatorPasswordX" class="closeBtn" type="button" aria-label="Chiudi">×</button></div>
+      <div id="operatorPasswordUser" class="saleItemLabel"></div>
+      <label class="fieldLabel" for="operatorPasswordValue">Nuova password *</label>
+      <input id="operatorPasswordValue" class="modalInput" type="password" minlength="12" maxlength="128" autocomplete="new-password" placeholder="Minimo 12 caratteri · A-z · 0-9 · simbolo">
+      <div id="operatorPasswordError" class="saleError"></div>
+      <div class="saleActions"><button id="operatorPasswordCancel" class="secondaryAction" type="button">Annulla</button><button id="operatorPasswordSave" class="primaryAction" type="button">Salva password</button></div>
+    </div>
+  </div>
+
+  <template id="modelTemplate">
+    <section class="model">
+      <button class="modelHeader" type="button" aria-expanded="false">
+        <div class="modelHeaderMain">
+          <img class="modelThumb" src="" alt="" loading="lazy">
+          <div><h2></h2><span class="modelCount"></span></div>
+        </div>
+        <span class="chevron">⌄</span>
+      </button>
+      <div class="colors"></div>
+    </section>
+  </template>
+
+  <template id="colorTemplate">
+    <div class="colorRow">
+      <div class="colorInfo"><span class="dot"></span><div><strong class="colorName"></strong><span class="status"></span></div></div>
+      <div class="stepper"><button class="minus saleStockAction" title="Scarica 1 dalla giacenza">−1 Scarica</button><input class="qty" inputmode="numeric" pattern="[0-9]*" value="0"><button class="plus">+</button></div>
+    </div>
+  </template>
+
+  <div id="scannerModal" class="saleModal scannerModal" hidden><div class="saleDialog scannerDialog"><div class="saleDialogHead"><div><span class="saleKicker">SCANNER</span><h2>QR / Codice a barre</h2></div><button id="scannerClose" class="closeBtn" type="button">×</button></div><div class="scannerStage"><video id="scannerVideo" class="scannerVideo" playsinline muted></video><div class="scannerFrame"><i></i><i></i><i></i><i></i><span class="scannerLaser"></span></div><div class="scannerHint">Inquadra il codice</div></div><p id="scannerMsg" class="scannerMsg">Apertura fotocamera…</p><div class="scannerManualDivider"><span>oppure</span></div><label class="fieldLabel">Inserisci il codice manualmente</label><div class="scannerManual"><input id="scannerManualCode" class="modalInput" type="text" placeholder="Es. BK76587"><button id="scannerManualSearch" class="primaryAction" type="button">Cerca</button></div></div></div>
+  <div id="accountOperatorsModal" class="saleModal" hidden>
+    <div class="saleDialog accountOperatorsDialog" role="dialog" aria-modal="true" aria-labelledby="accountOperatorsTitle">
+      <div class="saleDialogHead"><div><span class="saleKicker">OPERATORI ACCOUNT</span><h2 id="accountOperatorsTitle">Operatori</h2></div><button id="accountOperatorsX" class="closeBtn" type="button" aria-label="Chiudi">×</button></div>
+      <p class="accountOperatorsHelp">Ogni persona usa il proprio codice. Il codice viene salvato cifrato e non è visibile dopo il salvataggio.</p>
+      <form id="accountOperatorForm" class="accountOperatorForm">
+        <div class="operatorGrid"><label><span class="fieldLabel">Nome *</span><input id="accountOperatorName" class="modalInput" type="text" maxlength="80" placeholder="es. Simone" required></label><label><span class="fieldLabel">Codice personale *</span><input id="accountOperatorCode" class="modalInput" type="password" inputmode="numeric" pattern="[0-9]*" minlength="6" maxlength="8" autocomplete="new-password" placeholder="6–8 cifre" required></label></div>
+        <button class="primaryAction" type="submit">Salva operatore / codice</button><div id="accountOperatorsMsg" class="createUserMsg"></div>
+      </form>
+      <div class="usersListTitle"><strong>Operatori configurati</strong></div><div id="accountOperatorsList"><div class="emptyState">Caricamento…</div></div>
+      <div class="saleActions"><button id="accountOperatorsCancel" class="secondaryAction" type="button">Chiudi</button></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@3.0.2/dist/jspdf.umd.min.js"></script>
+
+  <div id="passwordRecoveryModal" class="saleModal" hidden>
+    <div class="saleDialog" role="dialog" aria-modal="true" aria-labelledby="passwordRecoveryTitle">
+      <div class="saleDialogHead"><div><span class="saleKicker">RECUPERA PASSWORD</span><h2 id="passwordRecoveryTitle">Imposta una nuova password</h2></div></div>
+      <label class="fieldLabel" for="recoveryPassword">Nuova password *</label>
+      <input id="recoveryPassword" class="modalInput" type="password" minlength="12" maxlength="128" autocomplete="new-password" placeholder="Minimo 12 caratteri · A-z · 0-9 · simbolo">
+      <label class="fieldLabel" for="recoveryPassword2">Ripeti password *</label>
+      <input id="recoveryPassword2" class="modalInput" type="password" minlength="12" autocomplete="new-password" placeholder="Ripeti la password">
+      <div id="recoveryPasswordMsg" class="saleError"></div>
+      <div class="saleActions"><button id="saveRecoveryPassword" class="primaryAction" type="button">Salva nuova password</button></div>
+    </div>
+  </div>
+
+  
+<button id="smartBackBtn" class="smartBackBtn animatedBtn" type="button" hidden>← <span>Indietro</span></button>
+<div id="pullRefreshIndicator" class="pullRefreshIndicator" aria-hidden="true"><span>↻</span><b>Aggiorna</b></div>
+<nav id="mobileBottomNav" class="mobileBottomNav premiumBottomNav" aria-label="Azioni rapide" hidden>
+ <button type="button" data-smart-action="home"><b>⌂</b><span>Home</span></button>
+ <button type="button" data-smart-action="primary"><b>⌕</b><span>Cerca</span></button>
+ <button type="button" class="scannerNavButton" data-smart-action="scanner"><b>▣</b><span>Scanner</span></button>
+ <button type="button" data-smart-action="history"><b>◷</b><span>Cronologia</span></button>
+ <button type="button" data-smart-action="menu"><b>☰</b><span>Menu</span></button>
+</nav>
+<script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js"></script>
+<script src="app.js?v=96"></script>
+
+
+
+
+</body>
+</html>
